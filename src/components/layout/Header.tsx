@@ -55,21 +55,29 @@ export function Header() {
             ))}
           </nav>
 
-          <button
-            type="button"
-            onClick={openCart}
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full gold-border bg-white/50"
-            aria-label="עגלה"
-            data-magnetic
-            data-cursor-label="BAG"
-          >
-            <ShoppingBag size={18} />
-            {totalUnits > 0 && (
-              <span className="absolute -top-1 -left-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-ink px-1 text-[10px] font-bold text-pink-soft">
-                <bdi>{totalUnits}</bdi>
-              </span>
-            )}
-          </button>
+          <div className="flex items-center gap-1">
+            <Link
+              href="/cart"
+              className="hidden h-10 items-center rounded-full px-3 text-sm font-medium text-ink-muted hover:text-ink sm:inline-flex"
+            >
+              לעגלה
+            </Link>
+            <button
+              type="button"
+              onClick={openCart}
+              className="relative inline-flex h-10 w-10 items-center justify-center rounded-full gold-border bg-white/50"
+              aria-label="עגלה"
+              data-magnetic
+              data-cursor-label="BAG"
+            >
+              <ShoppingBag size={18} />
+              {totalUnits > 0 && (
+                <span className="absolute -top-1 -left-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-ink px-1 text-[10px] font-bold text-pink-soft">
+                  <bdi>{totalUnits}</bdi>
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
