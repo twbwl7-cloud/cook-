@@ -26,19 +26,13 @@ export function MagneticCursor() {
       const target = (e.target as HTMLElement | null)?.closest(
         "[data-magnetic]",
       ) as HTMLElement | null;
+      // Cursor scales only — do not translate targets (keeps hit-targets stable at 60FPS).
       if (target) {
         scale = 2.4;
         label = target.dataset.cursorLabel ?? "";
-        const rect = target.getBoundingClientRect();
-        const mx = e.clientX - (rect.left + rect.width / 2);
-        const my = e.clientY - (rect.top + rect.height / 2);
-        target.style.transform = `translate(${mx * 0.18}px, ${my * 0.18}px)`;
       } else {
         scale = 1;
         label = "";
-        document.querySelectorAll<HTMLElement>("[data-magnetic]").forEach((el) => {
-          el.style.transform = "";
-        });
       }
     };
 
