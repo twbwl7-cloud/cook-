@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Canvas, useLoader } from "@react-three/fiber";
 import {
   ContactShadows,
   Environment,
@@ -9,7 +9,7 @@ import {
   OrbitControls,
   useProgress,
 } from "@react-three/drei";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
 import Image from "next/image";
 
@@ -26,7 +26,6 @@ function Loader() {
 
 /** White+gold crown cake — rotatable 360° (book A23 / P23 mental simulation). */
 function StudioCake() {
-  const group = useRef<THREE.Group>(null);
   const texture = useLoader(THREE.TextureLoader, "/cakes/hero/round-gold-crown.jpg");
 
   useMemo(() => {
@@ -34,12 +33,6 @@ function StudioCake() {
     texture.wrapS = THREE.ClampToEdgeWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
   }, [texture]);
-
-  // Gentle idle sway only when not dragging — OrbitControls handles spin
-  useFrame((_, dt) => {
-    if (!group.current) return;
-    group.current.rotation.y += dt * 0.08;
-  });
 
   const frosting = useMemo(
     () =>
