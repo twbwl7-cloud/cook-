@@ -24,14 +24,11 @@ export default function HomePage() {
       {/* Category gate — P28 fewer choices */}
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <Reveal>
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-ink">
-            בחירה אחת · 3 מסלולים
-          </p>
-          <h2 className="mt-2 font-display text-3xl text-ink sm:text-4xl">
+          <h2 className="font-display text-3xl text-ink sm:text-4xl">
             איזו עוגה סוגרת לכם את האירוע?
           </h2>
-          <p className="mt-2 max-w-xl font-medium text-ink/75">
-            לא 30 אופציות מבולבלות — שלוש קטגוריות ברורות מצילומי הסטודיו.
+          <p className="mt-2 max-w-xl font-bold text-ink/80">
+            שלוש קטגוריות ברורות — עוגות גן, מספרים ומעוצבות.
           </p>
         </Reveal>
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -114,10 +111,7 @@ export default function HomePage() {
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <Reveal>
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-ink">
-            אמון · ביקורות אמיתיות · P18
-          </p>
-          <h2 className="mt-2 font-display text-3xl text-ink sm:text-4xl">
+          <h2 className="font-display text-3xl text-ink sm:text-4xl">
             מה כותבות אחרי האירוע
           </h2>
         </Reveal>

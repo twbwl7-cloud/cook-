@@ -1,9 +1,14 @@
 "use client";
 
+/**
+ * Real cake photo on a turntable disc — drag to spin 360°.
+ * Book: P23 mental simulation / A23 product rotation.
+ * Poster first (A01) — Canvas lazy.
+ */
+
 import { Canvas, useLoader } from "@react-three/fiber";
 import {
   ContactShadows,
-  Environment,
   Float,
   Html,
   OrbitControls,
@@ -17,125 +22,87 @@ function Loader() {
   const { progress } = useProgress();
   return (
     <Html center>
-      <div className="rounded-full bg-ink px-4 py-2 text-sm font-bold text-pink-soft">
-        טוען עוגה… <bdi>{progress.toFixed(0)}%</bdi>
+      <div className="rounded-full bg-ink px-4 py-2 text-sm font-extrabold text-pink-soft">
+        טוען… <bdi>{progress.toFixed(0)}%</bdi>
       </div>
     </Html>
   );
 }
 
-/** White+gold crown cake — rotatable 360° (book A23 / P23 mental simulation). */
-function StudioCake() {
+function RealCakeTurntable() {
   const texture = useLoader(THREE.TextureLoader, "/cakes/hero/round-gold-crown.jpg");
 
   useMemo(() => {
     texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 8;
     texture.wrapS = THREE.ClampToEdgeWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
   }, [texture]);
 
-  const frosting = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#FFFAFC",
-        roughness: 0.55,
-        metalness: 0.05,
-      }),
-    [],
-  );
-  const gold = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#D4AF37",
-        roughness: 0.28,
-        metalness: 0.92,
-      }),
-    [],
-  );
-  const board = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#F5F5F5",
-        roughness: 0.7,
-        metalness: 0.1,
-      }),
-    [],
-  );
   const photoMat = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
         map: texture,
-        transparent: true,
+        toneMapped: false,
       }),
     [texture],
   );
 
+  const rimMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#0A0A0A",
+        roughness: 0.45,
+        metalness: 0.35,
+      }),
+    [],
+  );
+
+  const goldMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#D4AF37",
+        roughness: 0.3,
+        metalness: 0.85,
+      }),
+    [],
+  );
+
+  const backMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#1A1A1A",
+        roughness: 0.6,
+        metalness: 0.2,
+      }),
+    [],
+  );
+
   return (
-    <group ref={group} position={[0, -0.35, 0]}>
-      {/* Cake board */}
-      <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <cylinderGeometry args={[1.55, 1.55, 0.06, 64]} />
-        <primitive object={board} attach="material" />
+    <group position={[0, 0.05, 0]}>
+      {/* Charcoal rim / cake board edge */}
+      <mesh castShadow>
+        <cylinderGeometry args={[1.62, 1.62, 0.14, 64]} />
+        <primitive object={rimMat} attach="material" />
       </mesh>
 
-      {/* Cake body */}
-      <mesh position={[0, 0.55, 0]} castShadow>
-        <cylinderGeometry args={[1.15, 1.2, 1.05, 64]} />
-        <primitive object={frosting} attach="material" />
+      {/* Thin gold ring */}
+      <mesh position={[0, 0.08, 0]}>
+        <torusGeometry args={[1.58, 0.035, 12, 64]} />
+        <primitive object={goldMat} attach="material" />
       </mesh>
 
-      {/* Top frosting disc with real photo (front-facing reference) */}
-      <mesh position={[0, 1.08, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[1.05, 64]} />
+      {/* THE real cake photo — front face */}
+      <mesh position={[0, 0.078, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.52, 96]} />
         <primitive object={photoMat} attach="material" />
       </mesh>
 
-      {/* Piped rim */}
-      <mesh position={[0, 1.05, 0]}>
-        <torusGeometry args={[1.05, 0.07, 16, 64]} />
-        <primitive object={frosting.clone()} attach="material" />
+      {/* Back face so 360° never shows empty */}
+      <mesh position={[0, -0.078, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.52, 64]} />
+        <primitive object={backMat} attach="material" />
       </mesh>
-      <mesh position={[0, 0.08, 0]}>
-        <torusGeometry args={[1.18, 0.06, 16, 64]} />
-        <primitive object={frosting.clone()} attach="material" />
-      </mesh>
-
-      {/* Gold crown */}
-      <group position={[0, 1.35, 0]}>
-        <mesh castShadow>
-          <cylinderGeometry args={[0.22, 0.28, 0.12, 6]} />
-          <primitive object={gold} attach="material" />
-        </mesh>
-        {[0, 1, 2, 3, 4, 5].map((i) => {
-          const a = (i / 6) * Math.PI * 2;
-          return (
-            <mesh
-              key={i}
-              position={[Math.cos(a) * 0.22, 0.18, Math.sin(a) * 0.22]}
-              castShadow
-            >
-              <coneGeometry args={[0.045, 0.22, 4]} />
-              <primitive object={gold} attach="material" />
-            </mesh>
-          );
-        })}
-      </group>
-
-      {/* Gold leaf flecks */}
-      {Array.from({ length: 14 }).map((_, i) => {
-        const a = (i / 14) * Math.PI * 2;
-        const r = 0.55 + (i % 3) * 0.18;
-        return (
-          <mesh
-            key={`flake-${i}`}
-            position={[Math.cos(a) * r, 0.35 + (i % 5) * 0.12, Math.sin(a) * r]}
-            rotation={[Math.random(), a, 0.4]}
-          >
-            <boxGeometry args={[0.06, 0.01, 0.04]} />
-            <primitive object={gold} attach="material" />
-          </mesh>
-        );
-      })}
     </group>
   );
 }
@@ -144,74 +111,66 @@ export default function HeroCake3D() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setReady(true), 120);
+    const t = window.setTimeout(() => setReady(true), 80);
     return () => window.clearTimeout(t);
   }, []);
 
   return (
-    <div className="relative h-[380px] w-full cursor-grab active:cursor-grabbing sm:h-[460px] lg:h-[540px]">
-      {/* LCP poster — book A01: first screen never waits on 3D */}
-      {!ready && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative h-[88%] w-[88%] overflow-hidden rounded-full border-2 border-ink/80 contact-shadow">
-            <Image
-              src="/cakes/hero/round-gold-crown.jpg"
-              alt=""
-              fill
-              priority
-              className="object-cover"
-              sizes="(max-width:1024px) 90vw, 480px"
-            />
-          </div>
+    <div className="relative h-[400px] w-full cursor-grab touch-none active:cursor-grabbing sm:h-[480px] lg:h-[560px]">
+      {/* Static poster = LCP, real photo */}
+      <div
+        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${ready ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      >
+        <div className="relative aspect-square w-[88%] overflow-hidden rounded-full border-[3px] border-ink contact-shadow">
+          <Image
+            src="/cakes/hero/round-gold-crown.jpg"
+            alt="עוגת כתר זהב — LALIBAKERY"
+            fill
+            priority
+            className="object-cover"
+            sizes="(max-width:1024px) 90vw, 520px"
+          />
         </div>
-      )}
+      </div>
 
       {ready && (
         <Canvas
-          camera={{ position: [0, 1.4, 4.2], fov: 38 }}
+          camera={{ position: [0, 2.6, 2.8], fov: 40 }}
           dpr={[1, 1.75]}
           gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-          shadows
         >
-          <color attach="background" args={["#00000000"]} />
-          <ambientLight intensity={0.65} />
-          <directionalLight
-            position={[4, 6, 3]}
-            intensity={1.25}
-            castShadow
-            shadow-mapSize={[1024, 1024]}
-            color="#fff6e8"
-          />
-          <directionalLight position={[-3, 2, -2]} intensity={0.35} color="#ffd1dc" />
+          <ambientLight intensity={0.95} />
+          <directionalLight position={[3, 5, 2]} intensity={1.1} color="#ffffff" />
+          <directionalLight position={[-2, 2, -1]} intensity={0.35} color="#ffd1dc" />
           <Suspense fallback={<Loader />}>
-            <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.35}>
-              <StudioCake />
+            <Float speed={1.1} rotationIntensity={0.08} floatIntensity={0.25}>
+              <RealCakeTurntable />
             </Float>
             <ContactShadows
-              position={[0, -0.35, 0]}
-              opacity={0.45}
-              scale={8}
-              blur={2.4}
-              far={4}
-              color="#0D0D0D"
+              position={[0, -0.85, 0]}
+              opacity={0.55}
+              scale={10}
+              blur={2.6}
+              far={5}
+              color="#0A0A0A"
             />
-            <Environment preset="city" environmentIntensity={0.35} />
           </Suspense>
           <OrbitControls
             makeDefault
             enableZoom={false}
             enablePan={false}
-            minPolarAngle={Math.PI / 3.2}
-            maxPolarAngle={Math.PI / 1.85}
-            autoRotate={false}
-            rotateSpeed={0.85}
+            autoRotate
+            autoRotateSpeed={0.7}
+            rotateSpeed={1}
+            minPolarAngle={0.35}
+            maxPolarAngle={Math.PI / 2.1}
           />
         </Canvas>
       )}
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center">
-        <span className="rounded-full bg-ink px-3 py-1.5 text-[11px] font-bold tracking-wide text-pink-soft">
-          גררו לסיבוב 360° · DRAG
+      <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
+        <span className="rounded-full border-2 border-ink bg-ink px-4 py-1.5 text-[11px] font-extrabold tracking-wide text-pink-soft">
+          זו העוגה האמיתית · גררו לסיבוב 360°
         </span>
       </div>
     </div>
