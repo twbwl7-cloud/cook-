@@ -13,8 +13,8 @@ export function ProductCard({ product }: { product: Product }) {
   const price = variant?.priceIls ?? 0;
 
   return (
-    <article className="group">
-      <Link href={`/product/${product.slug}`} className="block">
+    <article className="group flex h-full flex-col">
+      <Link href={`/product/${product.slug}`} className="block flex-1">
         <div className="relative aspect-[4/5] overflow-hidden rounded-[1.25rem] bg-pink-base/50 contact-shadow">
           <Image
             src={product.image}
@@ -55,7 +55,11 @@ export function ProductCard({ product }: { product: Product }) {
           className="w-full"
           data-magnetic
           data-cursor-label="ADD"
-          onClick={() => variant && addItem(product.id, variant.id, 1)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (variant) addItem(product.id, variant.id, 1);
+          }}
           disabled={!variant || variant.stock < 1}
         >
           {product.category === "service" ? "להזמנת תור" : "הוספה לעגלה"}
