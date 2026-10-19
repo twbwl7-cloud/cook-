@@ -56,4 +56,4 @@ See `src/sanity/schemas/index.ts` and `src/types/commerce.ts`.
 
 ## Deploy (Vercel)
 
-See README. Env: payment keys, Sanity, Sheets webhook, SMS — optional locally.
+See README. Env: payment keys, Sanity, Sheets webhook, SMS — optional locally (`env.example`).

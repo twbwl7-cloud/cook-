@@ -28,7 +28,7 @@ npm run build && npm start
 
 ## משתני סביבה
 
-העתיקו `.env.example` ל־`.env.local` כשמחברים Sanity / סליקה / Sheets.
+העתיקו `env.example` ל־`.env.local` כשמחברים Sanity / סליקה / Sheets.
 
 בלי מפתחות — האתר רץ מלא על mock + וואטסאפ.
 
