@@ -25,12 +25,12 @@ const frank = Frank_Ruhl_Libre({
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteSettings.brandName} · בוטיק פרימיום`,
+    default: `${siteSettings.brandName} · ${siteSettings.tagline}`,
     template: `%s · ${siteSettings.brandName}`,
   },
   description:
-    "בוטיק פרימיום ישראלי — מארזי VIP, אריזת זהב, משלוח אקספרס עד הבית.",
-  metadataBase: new URL("https://luxeglam.co.il"),
+    "LALIBAKERY — עוגות גן, עוגות מספרים ועוגות מעוצבות. אפייה מהלב. הזמנות: 050-8739090",
+  metadataBase: new URL("https://lalibakery.co.il"),
 };
 
 export default function RootLayout({

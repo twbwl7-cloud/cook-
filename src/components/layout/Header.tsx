@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
@@ -8,11 +9,11 @@ import { siteSettings } from "@/data/site";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/shop", label: "חנות" },
-  { href: "/collections", label: "קולקציות" },
+  { href: "/collections/gan", label: "עוגות גן" },
+  { href: "/collections/misparim", label: "עוגות מספרים" },
+  { href: "/collections/meutzavot", label: "עוגות מעוצבות" },
+  { href: "/shop", label: "הכל" },
   { href: "/about", label: "אודות" },
-  { href: "/reviews", label: "המלצות" },
-  { href: "/faq", label: "שאלות" },
   { href: "/contact", label: "צור קשר" },
 ];
 
@@ -23,8 +24,8 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      <div className="border-b border-ink/8 bg-pink-soft/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="border-b border-ink/8 bg-pink-soft/85 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-full md:hidden"
@@ -36,14 +37,23 @@ export function Header() {
 
           <Link
             href="/"
-            className="font-display text-xl tracking-tight text-ink sm:text-2xl"
+            className="flex items-center gap-2"
             data-magnetic
             data-cursor-label="HOME"
           >
-            {siteSettings.brandName}
+            <Image
+              src="/cakes/brand/logo.jpg"
+              alt=""
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+            <span className="font-display text-lg tracking-tight text-ink sm:text-xl">
+              {siteSettings.brandName}
+            </span>
           </Link>
 
-          <nav className="hidden items-center gap-6 md:flex">
+          <nav className="hidden items-center gap-5 lg:flex">
             {links.map((l) => (
               <Link
                 key={l.href}
@@ -83,7 +93,7 @@ export function Header() {
 
       <div
         className={cn(
-          "border-b border-ink/8 bg-pink-soft md:hidden",
+          "border-b border-ink/8 bg-pink-soft lg:hidden",
           open ? "block" : "hidden",
         )}
       >

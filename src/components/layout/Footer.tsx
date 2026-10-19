@@ -8,21 +8,26 @@ export function Footer() {
         <div>
           <p className="font-display text-2xl">{siteSettings.brandName}</p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-pink-soft/75">
-            בוטיק פרימיום ישראלי — אסתטיקה בלתי מתפשרת, אריזת מתנה בכל הזמנה,
-            ומשלוח אקספרס עד הבית.
+            {siteSettings.tagline} — עוגות גן, מספרים ומעוצבות לפי הזמנה.
+            וואטסאפ: <bdi>{siteSettings.phone}</bdi>
           </p>
         </div>
         <div>
           <p className="text-sm font-semibold text-gold-2">ניווט</p>
           <ul className="mt-3 space-y-2 text-sm text-pink-soft/80">
             <li>
-              <Link href="/shop" className="hover:text-gold-2">
-                חנות
+              <Link href="/collections/gan" className="hover:text-gold-2">
+                עוגות גן
               </Link>
             </li>
             <li>
-              <Link href="/collections" className="hover:text-gold-2">
-                קולקציות
+              <Link href="/collections/misparim" className="hover:text-gold-2">
+                עוגות מספרים
+              </Link>
+            </li>
+            <li>
+              <Link href="/collections/meutzavot" className="hover:text-gold-2">
+                עוגות מעוצבות
               </Link>
             </li>
             <li>

@@ -44,7 +44,11 @@ export function ProductDetail({ product }: { product: Product }) {
 
       <div>
         <p className="text-sm font-semibold text-gold-3">
-          {product.tags.map((t) => t.toUpperCase()).join(" · ")}
+          {product.category === "gan" && "עוגות גן"}
+          {product.category === "misparim" && "עוגות מספרים"}
+          {product.category === "meutzavot" && "עוגות מעוצבות"}
+          {" · "}
+          {product.tags.join(" · ")}
         </p>
         <h1 className="mt-2 font-display text-4xl sm:text-5xl">{product.title}</h1>
         <p className="mt-4 text-lg text-ink-muted">{product.shortDescription}</p>
@@ -96,7 +100,7 @@ export function ProductDetail({ product }: { product: Product }) {
             disabled={!variant || variant.stock < 1}
             onClick={() => variant && addItem(product.id, variant.id, 1)}
           >
-            {product.category === "service" ? "להזמנת תור" : "הוספה לעגלה"}
+            הוספה לעגלה
           </Button>
           <a
             href={wa}
@@ -109,12 +113,12 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
 
         <ul className="mt-8 space-y-2 text-sm text-ink-muted">
-          <li>אריזת מתנה יוקרתית בכל הזמנה</li>
+          <li>צילום אמיתי מהסטודיו · עיצוב לפי הזמנה</li>
+          <li>תיאום טקסט, צבעים וטופרים בוואטסאפ</li>
           <li>
-            משלוח אקספרס · חינם מעל{" "}
-            <bdi>₪{siteSettings.freeShippingFromIls}</bdi>
+            משלוח / איסוף בתיאום ·{" "}
+            <bdi>{siteSettings.phone}</bdi>
           </li>
-          <li>ביטול והחזרה לפי חוק הגנת הצרכן</li>
         </ul>
       </div>
     </div>

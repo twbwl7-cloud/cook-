@@ -28,9 +28,19 @@ export function ProductCard({ product }: { product: Product }) {
               הדמיה
             </span>
           )}
-          {product.tags.includes("vip") && (
+          {product.category === "gan" && (
+            <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2 py-1 text-[10px] font-bold text-ink">
+              גן
+            </span>
+          )}
+          {product.category === "misparim" && (
             <span className="absolute top-3 left-3 rounded-full gold-gradient px-2 py-1 text-[10px] font-bold text-ink">
-              VIP
+              מספרים
+            </span>
+          )}
+          {product.category === "meutzavot" && (
+            <span className="absolute top-3 left-3 rounded-full bg-ink/85 px-2 py-1 text-[10px] font-bold text-gold-2">
+              מעוצבת
             </span>
           )}
         </div>
@@ -62,7 +72,7 @@ export function ProductCard({ product }: { product: Product }) {
           }}
           disabled={!variant || variant.stock < 1}
         >
-          {product.category === "service" ? "להזמנת תור" : "הוספה לעגלה"}
+          הוספה לעגלה
         </Button>
       </div>
     </article>

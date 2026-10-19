@@ -5,27 +5,24 @@ import { products } from "@/data/products";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { useCartStore } from "@/store/cart";
 import { Input } from "@/components/ui/input";
+import type { CakeCategory } from "@/types/commerce";
 
-const categories = [
+const categories: { id: "all" | CakeCategory; label: string }[] = [
   { id: "all", label: "הכל" },
-  { id: "gift-set", label: "מארזים" },
-  { id: "collection", label: "קולקציה" },
-  { id: "exclusive", label: "בלעדי" },
-  { id: "service", label: "שירותי VIP" },
-] as const;
+  { id: "gan", label: "עוגות גן" },
+  { id: "misparim", label: "עוגות מספרים" },
+  { id: "meutzavot", label: "עוגות מעוצבות" },
+];
 
-const tags = [
-  { id: "all", label: "כל התגיות" },
-  { id: "vip", label: "VIP" },
-  { id: "bestseller", label: "נמכרים" },
-  { id: "new", label: "חדש" },
-  { id: "gift", label: "מתנה" },
-] as const;
-
-export function ShopCatalog({ highlight }: { highlight?: string }) {
-  const [category, setCategory] = useState<(typeof categories)[number]["id"]>("all");
-  const [tag, setTag] = useState<(typeof tags)[number]["id"]>("all");
-  const [maxPrice, setMaxPrice] = useState(800);
+export function ShopCatalog({
+  highlight,
+  initialCategory = "all",
+}: {
+  highlight?: string;
+  initialCategory?: "all" | CakeCategory;
+}) {
+  const [category, setCategory] = useState<"all" | CakeCategory>(initialCategory);
+  const [maxPrice, setMaxPrice] = useState(600);
   const [q, setQ] = useState("");
   const setLastSearch = useCartStore((s) => s.setLastSearch);
   const lastSearch = useCartStore((s) => s.lastSearch);
@@ -34,12 +31,11 @@ export function ShopCatalog({ highlight }: { highlight?: string }) {
     return products.filter((p) => {
       const price = p.variants[0]?.priceIls ?? 0;
       if (category !== "all" && p.category !== category) return false;
-      if (tag !== "all" && !p.tags.includes(tag)) return false;
       if (price > maxPrice) return false;
       if (q && !`${p.title} ${p.shortDescription}`.includes(q)) return false;
       return true;
     });
-  }, [category, tag, maxPrice, q]);
+  }, [category, maxPrice, q]);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
@@ -51,7 +47,7 @@ export function ShopCatalog({ highlight }: { highlight?: string }) {
           <Input
             id="search"
             value={q}
-            placeholder={lastSearch || "מארז, סרום, VIP…"}
+            placeholder={lastSearch || "מיקי, מספרים, כתר…"}
             onChange={(e) => {
               setQ(e.target.value);
               setLastSearch(e.target.value);
@@ -79,31 +75,14 @@ export function ShopCatalog({ highlight }: { highlight?: string }) {
           </div>
         </div>
         <div>
-          <p className="text-xs font-semibold">תגית</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {tags.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setTag(t.id)}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium ${
-                  tag === t.id ? "gold-gradient text-ink" : "bg-white text-ink"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div>
           <label className="text-xs font-semibold" htmlFor="price">
             עד מחיר <bdi>₪{maxPrice}</bdi>
           </label>
           <input
             id="price"
             type="range"
-            min={100}
-            max={800}
+            min={200}
+            max={600}
             step={10}
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
@@ -114,7 +93,7 @@ export function ShopCatalog({ highlight }: { highlight?: string }) {
 
       <div>
         <p className="mb-4 text-sm text-ink-muted">
-          מציג <bdi>{filtered.length}</bdi> מתוך <bdi>{products.length}</bdi> מוצרים
+          מציג <bdi>{filtered.length}</bdi> מתוך <bdi>{products.length}</bdi> עוגות
         </p>
         {filtered.length === 0 ? (
           <div className="rounded-[1.25rem] bg-white/60 p-10 text-center contact-shadow">

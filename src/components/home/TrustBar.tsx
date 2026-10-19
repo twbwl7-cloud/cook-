@@ -1,11 +1,10 @@
 import { siteSettings } from "@/data/site";
-import { formatIls } from "@/lib/utils";
 
 const items = [
-  { title: "משלוח אקספרס", body: `חינם מעל ${formatIls(siteSettings.freeShippingFromIls)}` },
-  { title: "אריזת מתנה", body: "זהב ושחור בכל הזמנה" },
-  { title: "תשלום מקומי", body: "אשראי · ביט · פייבוקס · וואטסאפ" },
-  { title: "החזרה לפי חוק", body: "הגנת הצרכן · שקיפות מלאה" },
+  { title: "צילומים אמיתיים", body: "כל העוגות מהסטודיו — לא סטוק" },
+  { title: "התאמה אישית", body: "תמונה, שם, דמות וצבעים" },
+  { title: "וואטסאפ מהיר", body: siteSettings.phone },
+  { title: "שלוש קטגוריות", body: "גן · מספרים · מעוצבות" },
 ];
 
 export function TrustBar() {
@@ -15,7 +14,13 @@ export function TrustBar() {
         {items.map((item) => (
           <div key={item.title} className="text-center lg:text-right">
             <p className="text-sm font-bold text-ink">{item.title}</p>
-            <p className="mt-1 text-sm text-ink-muted">{item.body}</p>
+            <p className="mt-1 text-sm text-ink-muted">
+              {item.title === "וואטסאפ מהיר" ? (
+                <bdi>{item.body}</bdi>
+              ) : (
+                item.body
+              )}
+            </p>
           </div>
         ))}
       </div>

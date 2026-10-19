@@ -1,4 +1,6 @@
-export type ProductTag = "new" | "bestseller" | "vip" | "gift";
+export type CakeCategory = "gan" | "misparim" | "meutzavot";
+
+export type ProductTag = "new" | "bestseller" | "kids" | "luxury" | "custom";
 
 export type ProductVariant = {
   id: string;
@@ -15,20 +17,22 @@ export type Product = {
   title: string;
   shortDescription: string;
   description: string;
-  category: "collection" | "gift-set" | "service" | "exclusive";
+  category: CakeCategory;
   tags: ProductTag[];
   image: string;
   imageCredit: "real" | "mockup";
   featured: boolean;
+  shape: "round" | "sheet" | "number" | "shaped";
   variants: ProductVariant[];
 };
 
 export type Collection = {
   id: string;
-  slug: string;
+  slug: CakeCategory;
   title: string;
   description: string;
   productIds: string[];
+  coverImage: string;
 };
 
 export type Review = {
@@ -56,6 +60,7 @@ export type SiteSettings = {
   email: string;
   address: string;
   hours: string;
+  tagline: string;
   shippingFlatIls: number;
   freeShippingFromIls: number;
   launchCouponCode: string;

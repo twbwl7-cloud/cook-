@@ -9,9 +9,9 @@ export function VipPopup() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const seen = sessionStorage.getItem("lg-vip-popup");
+    const seen = sessionStorage.getItem("lb-vip-popup");
     if (seen) return;
-    const t = window.setTimeout(() => setOpen(true), 4200);
+    const t = window.setTimeout(() => setOpen(true), 5000);
     return () => window.clearTimeout(t);
   }, []);
 
@@ -24,7 +24,7 @@ export function VipPopup() {
         className="absolute inset-0 bg-ink/45"
         aria-label="סגור"
         onClick={() => {
-          sessionStorage.setItem("lg-vip-popup", "1");
+          sessionStorage.setItem("lb-vip-popup", "1");
           setOpen(false);
         }}
       />
@@ -33,28 +33,28 @@ export function VipPopup() {
           type="button"
           className="absolute top-3 left-3 rounded-full p-2 hover:bg-ink/5"
           onClick={() => {
-            sessionStorage.setItem("lg-vip-popup", "1");
+            sessionStorage.setItem("lb-vip-popup", "1");
             setOpen(false);
           }}
           aria-label="סגור"
         >
           <X size={16} />
         </button>
-        <p className="font-display text-2xl">מועדון VIP</p>
+        <p className="font-display text-2xl">קוד השקה ללקוחות חדשים</p>
         <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-          קוד השקה אמיתי לרכישה ראשונה:{" "}
+          קוד אמיתי להזמנה ראשונה:{" "}
           <bdi className="font-bold text-ink">{siteSettings.launchCouponCode}</bdi>{" "}
-          — הנחה של {siteSettings.launchCouponPercent}%. בלי ספירה לאחור מזויפת.
+          — {siteSettings.launchCouponPercent}% הנחה. בלי ספירה לאחור מזויפת.
         </p>
         <Button
           className="mt-5 w-full"
           onClick={() => {
             navigator.clipboard?.writeText(siteSettings.launchCouponCode);
-            sessionStorage.setItem("lg-vip-popup", "1");
+            sessionStorage.setItem("lb-vip-popup", "1");
             setOpen(false);
           }}
         >
-          העתקת קוד להשקה
+          העתקת קוד
         </Button>
       </div>
     </div>
