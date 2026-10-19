@@ -45,11 +45,13 @@ export function ProductCard({ product }: { product: Product }) {
           )}
         </div>
         <div className="mt-3 space-y-1 px-1">
-          <h3 className="font-display text-lg leading-tight">{product.title}</h3>
-          <p className="line-clamp-2 text-sm text-ink-muted">
+          <h3 className="font-display text-lg font-bold leading-tight text-ink">
+            {product.title}
+          </h3>
+          <p className="line-clamp-2 text-sm font-medium text-ink/70">
             {product.shortDescription}
           </p>
-          <p className="pt-1 text-base font-semibold">
+          <p className="pt-1 text-base font-extrabold text-ink">
             <bdi>{formatIls(price)}</bdi>
             {variant?.compareAtIls && variant.compareAtIls > price && (
               <s className="mr-2 text-sm font-normal text-ink-muted">

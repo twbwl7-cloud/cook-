@@ -24,11 +24,11 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      <div className="border-b border-ink/8 bg-pink-soft/85 backdrop-blur-xl">
+      <div className="border-b-2 border-ink bg-pink-soft/90 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full md:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-ink md:hidden"
             aria-label="תפריט"
             onClick={() => setOpen((v) => !v)}
           >
@@ -46,9 +46,9 @@ export function Header() {
               alt=""
               width={40}
               height={40}
-              className="h-10 w-10 rounded-full object-cover"
+              className="h-10 w-10 rounded-full border-2 border-ink object-cover"
             />
-            <span className="font-display text-lg tracking-tight text-ink sm:text-xl">
+            <span className="font-display text-lg font-bold tracking-tight text-ink sm:text-xl">
               {siteSettings.brandName}
             </span>
           </Link>
@@ -58,7 +58,7 @@ export function Header() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="text-sm font-medium text-ink-muted transition-colors hover:text-ink"
+                className="text-sm font-bold text-ink/85 transition-colors hover:text-ink"
               >
                 {l.label}
               </Link>

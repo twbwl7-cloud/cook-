@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Hero } from "@/components/home/Hero";
 import { TrustBar } from "@/components/home/TrustBar";
+import { PsychStrip } from "@/components/home/PsychStrip";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { collections, getProductsByCategory } from "@/data/products";
@@ -17,14 +18,20 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <PsychStrip />
       <TrustBar />
 
-      {/* Category gate */}
+      {/* Category gate — P28 fewer choices */}
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <Reveal>
-          <h2 className="font-display text-3xl sm:text-4xl">שלוש דרכים לעוגה מושלמת</h2>
-          <p className="mt-2 max-w-xl text-ink-muted">
-            בחרו קטגוריה — כל התמונות מהסטודיו האמיתי של {siteSettings.brandName}.
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-ink">
+            בחירה אחת · 3 מסלולים
+          </p>
+          <h2 className="mt-2 font-display text-3xl text-ink sm:text-4xl">
+            איזו עוגה סוגרת לכם את האירוע?
+          </h2>
+          <p className="mt-2 max-w-xl font-medium text-ink/75">
+            לא 30 אופציות מבולבלות — שלוש קטגוריות ברורות מצילומי הסטודיו.
           </p>
         </Reveal>
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -56,14 +63,14 @@ export default function HomePage() {
         return (
           <section key={c.id} className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
             <Reveal>
-              <div className="flex items-end justify-between gap-4">
+              <div className="flex items-end justify-between gap-4 border-b-2 border-ink pb-3">
                 <div>
-                  <h2 className="font-display text-3xl">{c.title}</h2>
-                  <p className="mt-1 text-sm text-ink-muted">{c.description}</p>
+                  <h2 className="font-display text-3xl text-ink">{c.title}</h2>
+                  <p className="mt-1 text-sm font-medium text-ink/70">{c.description}</p>
                 </div>
                 <Link
                   href={`/collections/${c.slug}`}
-                  className="shrink-0 text-sm font-semibold underline"
+                  className="shrink-0 text-sm font-extrabold text-ink underline"
                 >
                   הכל
                 </Link>
@@ -107,14 +114,19 @@ export default function HomePage() {
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <Reveal>
-          <h2 className="font-display text-3xl sm:text-4xl">מה כותבות אחרי האירוע</h2>
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-ink">
+            אמון · ביקורות אמיתיות · P18
+          </p>
+          <h2 className="mt-2 font-display text-3xl text-ink sm:text-4xl">
+            מה כותבות אחרי האירוע
+          </h2>
         </Reveal>
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {reviews.slice(0, 4).map((r, i) => (
             <Reveal key={r.id} delay={i * 0.05}>
-              <blockquote className="rounded-[1.25rem] bg-white/60 p-5 contact-shadow">
-                <p className="text-sm leading-relaxed">“{r.body}”</p>
-                <footer className="mt-4 text-xs text-ink-muted">
+              <blockquote className="rounded-[1.25rem] border-2 border-ink/90 bg-white p-5 contact-shadow">
+                <p className="text-sm font-medium leading-relaxed text-ink">“{r.body}”</p>
+                <footer className="mt-4 text-xs font-bold text-ink/70">
                   {r.author} · {r.city} · {"★".repeat(r.rating)}
                 </footer>
               </blockquote>

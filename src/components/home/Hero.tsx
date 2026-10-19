@@ -1,107 +1,96 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
 import { KineticTitle } from "@/components/motion/Reveal";
 import { siteSettings } from "@/data/site";
 
-export function Hero() {
-  const reduce = useReducedMotion();
+const HeroCake3D = dynamic(() => import("@/components/immersive/HeroCake3D"), {
+  ssr: false,
+  loading: () => (
+    <div className="relative mx-auto flex h-[380px] w-full max-w-md items-center justify-center sm:h-[460px]">
+      <div className="relative h-[88%] w-[88%] overflow-hidden rounded-full border-2 border-ink contact-shadow">
+        <Image
+          src="/cakes/hero/round-gold-crown.jpg"
+          alt="עוגת כתר זהב"
+          fill
+          priority
+          className="object-cover"
+          sizes="480px"
+        />
+      </div>
+    </div>
+  ),
+});
 
+export function Hero() {
   return (
     <section className="relative min-h-[100svh] overflow-hidden">
-      {/* Full-bleed atmosphere */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 90% 70% at 75% 35%, #ffd1dc 0%, transparent 55%), radial-gradient(ellipse 50% 45% at 10% 85%, #fff0c8 0%, transparent 50%), linear-gradient(165deg, #fee1e8 0%, #fff7fa 55%, #ffe8ef 100%)",
+            "radial-gradient(ellipse 70% 50% at 85% 30%, #ffd1dc 0%, transparent 55%), radial-gradient(ellipse 40% 35% at 5% 90%, #0D0D0D22 0%, transparent 50%), linear-gradient(165deg, #FEE1E8 0%, #FFF7FA 55%, #F0DCE3 100%)",
         }}
       />
 
-      <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-28 pt-6 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:pb-20 lg:pt-4">
-        {/* Round cake — hero visual */}
-        <div className="relative order-1 mx-auto w-full max-w-md lg:order-2 lg:max-w-none">
-          <motion.div
-            className="relative aspect-square"
-            initial={reduce ? false : { opacity: 0, scale: 0.92, y: 24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {/* Soft glow behind cake */}
-            <div
-              aria-hidden
-              className="absolute inset-[8%] rounded-full bg-gradient-to-br from-gold-2/35 via-pink-deep/25 to-transparent blur-2xl"
-            />
-            <div className="absolute inset-0 overflow-hidden rounded-full border border-gold-1/40 contact-shadow">
-              <Image
-                src="/cakes/hero/round-gold-crown.jpg"
-                alt="עוגה מעוצבת עגולה עם כתר זהב — LALIBAKERY"
-                fill
-                priority
-                sizes="(max-width:1024px) 90vw, 48vw"
-                className="object-cover scale-[1.02]"
-              />
-            </div>
-            <motion.div
-              aria-hidden
-              className="absolute -bottom-2 left-1/2 h-6 w-[70%] -translate-x-1/2 rounded-[100%] bg-ink/15 blur-md"
-              animate={reduce ? undefined : { scaleX: [1, 1.06, 1], opacity: [0.35, 0.5, 0.35] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </motion.div>
-          <p className="mt-4 text-center text-[11px] tracking-wide text-ink-muted/80">
-            עוגה מעוצבת אמיתית מהסטודיו · לא הדמיה
-          </p>
+      <div className="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-20 pt-6 sm:px-6 lg:grid-cols-2 lg:gap-10 lg:pb-14">
+        {/* 360° cake — book P23 / A23 */}
+        <div className="order-1 lg:order-2">
+          <HeroCake3D />
         </div>
 
         <div className="order-2 text-center lg:order-1 lg:text-right">
-          <div className="mb-4 inline-flex items-center gap-3">
+          <div className="mb-5 inline-flex items-center gap-3 rounded-full border-2 border-ink bg-ink px-3 py-2">
             <Image
               src="/cakes/brand/logo.jpg"
-              alt={siteSettings.brandName}
-              width={56}
-              height={56}
-              className="h-14 w-14 rounded-full border border-ink/10 object-cover contact-shadow"
+              alt=""
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover"
             />
-            <div className="text-right">
-              <p className="font-display text-2xl leading-none text-ink sm:text-3xl">
-                {siteSettings.brandName}
-              </p>
-              <p className="mt-1 text-xs font-medium text-ink-muted">
-                {siteSettings.tagline}
-              </p>
+            <div className="text-right leading-tight">
+              <p className="font-display text-lg text-pink-soft">{siteSettings.brandName}</p>
+              <p className="text-[11px] font-bold text-gold-2">{siteSettings.tagline}</p>
             </div>
           </div>
 
+          {/* P01 concrete H1 — charcoal, not AI fluff */}
           <KineticTitle
             text="העוגה שסוגרת את המסיבה"
-            className="mt-2 text-4xl leading-[1.12] text-ink sm:text-5xl lg:text-6xl"
+            className="text-4xl leading-[1.1] text-ink sm:text-5xl lg:text-[3.4rem]"
           />
-          <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-ink-muted sm:text-lg lg:mx-0">
-            עוגות גן · מספרים · מעוצבות — לפי תמונה, דמות או רעיון.
-            הזמנה בוואטסאפ ב־
-            <bdi className="font-semibold text-ink"> {siteSettings.phone}</bdi>
+
+          {/* P17 specific claim with number */}
+          <p className="mx-auto mt-5 max-w-md text-base font-bold leading-relaxed text-ink sm:text-lg lg:mx-0">
+            3 קטגוריות · הזמנה לפי תמונה או דמות · וואטסאפ{" "}
+            <bdi className="font-extrabold">{siteSettings.phone}</bdi>
           </p>
 
+          {/* P03 isolation — one gold CTA dominates */}
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
             <Link
               href="/product/gold-crown-king"
-              className="btn-gold contact-shadow inline-flex h-12 min-w-[200px] items-center justify-center rounded-full px-7 text-sm font-bold"
+              className="btn-gold contact-shadow inline-flex h-13 min-h-12 min-w-[220px] items-center justify-center rounded-full px-8 text-sm font-extrabold text-ink"
               data-magnetic
-              data-cursor-label="BUY"
+              data-cursor-label="ORDER"
             >
-              להזמנת עוגה מעוצבת
+              להזמנת העוגה הזו
             </Link>
             <Link
-              href="/shop"
-              className="inline-flex h-12 min-w-[160px] items-center justify-center rounded-full gold-border bg-white/50 px-6 text-sm font-semibold backdrop-blur"
+              href="/collections/gan"
+              className="inline-flex h-12 min-w-[160px] items-center justify-center rounded-full border-2 border-ink bg-ink px-6 text-sm font-bold text-pink-soft"
             >
-              לכל הקטגוריות
+              עוגות גן
             </Link>
           </div>
+
+          {/* P14 social proof */}
+          <p className="mt-6 text-xs font-extrabold tracking-wide text-ink">
+            ★★★★★ · לקוחות חוזרות בוואטסאפ · צילומים מהסטודיו בלבד
+          </p>
         </div>
       </div>
     </section>
