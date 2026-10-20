@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getProductBySlug, products } from "@/data/products";
 import { ProductDetail } from "@/components/shop/ProductDetail";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { ProductJsonLd } from "@/components/seo/JsonLd";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -37,6 +38,7 @@ export default async function ProductPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <ProductJsonLd slug={slug} />
       <ProductDetail product={product} />
       {related.length > 0 && (
         <section className="mt-20">

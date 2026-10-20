@@ -10,6 +10,7 @@ import { LenisProvider } from "@/components/motion/LenisProvider";
 import { MagneticCursor } from "@/components/motion/MagneticCursor";
 import { VipPopup } from "@/components/home/VipPopup";
 import { AccessibilityWidget } from "@/components/layout/AccessibilityWidget";
+import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { siteSettings } from "@/data/site";
 
 const heebo = Heebo({
@@ -56,6 +57,7 @@ export default function RootLayout({
       <body
         className={`${heebo.variable} ${frank.variable} sticky-cta-safe antialiased`}
       >
+        <OrganizationJsonLd />
         <a href="#main-content" className="skip-link">
           דלג לתוכן הראשי
         </a>

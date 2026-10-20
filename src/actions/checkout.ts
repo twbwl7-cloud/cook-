@@ -31,6 +31,18 @@ export async function submitCheckout(
   raw: unknown,
 ): Promise<CheckoutResult> {
   const h = await headers();
+  const origin = h.get("origin");
+  const host = h.get("host");
+  if (origin && host) {
+    try {
+      const originHost = new URL(origin).host;
+      if (originHost !== host) {
+        return { ok: false, errors: ["בקשה נדחתה."] };
+      }
+    } catch {
+      return { ok: false, errors: ["בקשה נדחתה."] };
+    }
+  }
   const ip =
     h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     h.get("x-real-ip") ||

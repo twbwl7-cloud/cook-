@@ -265,6 +265,8 @@ MVP interactions: pointer/touch rotate · GSAP scroll zoom · gold cursor trail 
 | Feature | Why deferred |
 |---------|----------------|
 | Sanity CMS | Locked Option B — Supabase only |
+| GROQ queries | N/A — Supabase SQL/RPC instead (`supabase/schema.sql`) |
+| 1+1 / Buy-X-Get-Y | Not in commerce lock; coupon `LALI10` only |
 | Image Sequence Hero | Path A not chosen; weight + no Blender sequence assets |
 | Page-transition shaders | Stage B focus on Builder conversion |
 | Bit / Apple Pay | Stage B payment expansion |

@@ -67,8 +67,14 @@ function TierCake({
       pointer.current.y = (e.clientY / window.innerHeight) * 2 - 1;
     };
     window.addEventListener("pointermove", onMove, { passive: true });
-    return () => window.removeEventListener("pointermove", onMove);
-  }, []);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      frosting.dispose();
+      cream.dispose();
+      gold.dispose();
+      plate.dispose();
+    };
+  }, [frosting, cream, gold, plate]);
 
   useFrame((_, delta) => {
     if (!group.current) return;

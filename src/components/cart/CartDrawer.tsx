@@ -144,6 +144,31 @@ export function CartDrawer() {
                 </p>
               )}
             </div>
+            <div className="space-y-2">
+              <p className="text-[11px] font-bold text-ink/70">
+                {quote.subtotalIls - quote.discountIls >=
+                siteSettings.freeShippingFromIls
+                  ? "משלוח חינם בהזמנה הזו"
+                  : `עוד ${formatIls(Math.max(0, siteSettings.freeShippingFromIls - (quote.subtotalIls - quote.discountIls)))} למשלוח חינם`}
+              </p>
+              <div
+                className="h-2 overflow-hidden rounded-full bg-ink/10"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={siteSettings.freeShippingFromIls}
+                aria-valuenow={Math.min(
+                  siteSettings.freeShippingFromIls,
+                  Math.max(0, quote.subtotalIls - quote.discountIls),
+                )}
+              >
+                <div
+                  className="h-full rounded-full bg-gold-luxury transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] origin-right"
+                  style={{
+                    transform: `scaleX(${Math.min(1, Math.max(0, quote.subtotalIls - quote.discountIls) / siteSettings.freeShippingFromIls)})`,
+                  }}
+                />
+              </div>
+            </div>
             <div className="space-y-1 text-sm">
               <div className="flex justify-between">
                 <span>ביניים</span>
