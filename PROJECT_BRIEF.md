@@ -1,9 +1,9 @@
 # LALIBAKERY — PROJECT BRIEF
 
 ## Status
-**Hero Engine (Script 1.2) — Stage 5 shipped.**  
-Header / Footer engines not started (await engine pick).  
-Docs: `ARCHITECTURE.md` · `DESIGN_DIRECTION.md` · `MOTION_SYSTEM.md`
+**Script 5 audit complete — VERDICT: NO-GO** (see `docs/FINAL_AUDIT_REPORT.md`).  
+Hero Engine shipped; Header/Footer elite engines still open.  
+Hardening landed: middleware CSP/headers, health, slots checkout, a11y widget, licenses.
 
 ## Hero (locked & live)
 - Direction A Noir Atelier · Path C1 3-tier R3F + poster LCP

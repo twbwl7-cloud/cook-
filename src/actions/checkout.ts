@@ -1,8 +1,10 @@
 "use server";
 
+import { headers } from "next/headers";
 import { checkoutSchema, quoteCart } from "@/lib/pricing";
 import { siteSettings } from "@/data/site";
 import { whatsappLink } from "@/lib/utils";
+import { rateLimit } from "@/lib/rate-limit";
 
 export type CheckoutResult =
   | {
@@ -14,36 +16,83 @@ export type CheckoutResult =
     }
   | { ok: false; errors: string[] };
 
+function addBusinessDays(from: Date, days: number): Date {
+  const d = new Date(from);
+  let left = days;
+  while (left > 0) {
+    d.setDate(d.getDate() + 1);
+    const day = d.getDay();
+    if (day !== 5 && day !== 6) left -= 1; // skip Fri/Sat for IL bakery MVP
+  }
+  return d;
+}
+
 export async function submitCheckout(
   raw: unknown,
 ): Promise<CheckoutResult> {
+  const h = await headers();
+  const ip =
+    h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    h.get("x-real-ip") ||
+    "unknown";
+  const limited = rateLimit(`checkout:${ip}`, 8, 60_000);
+  if (!limited.ok) {
+    return { ok: false, errors: ["יותר מדי ניסיונות. נסו שוב בעוד דקה."] };
+  }
+
   const parsed = checkoutSchema.safeParse(raw);
   if (!parsed.success) {
     return {
       ok: false,
-      errors: parsed.error.issues.map((i) => i.message),
+      errors: ["בדקו שכל השדות מלאים ותקינים (כולל תאריך איסוף/משלוח)."],
     };
   }
 
   const data = parsed.data;
-  const quote = quoteCart(data.lines, data.couponCode);
-  if (quote.errors.length || quote.lines.some((l) => !l.stockOk)) {
-    return { ok: false, errors: quote.errors.length ? quote.errors : ["מלאי לא מספיק"] };
+  if (data.company) {
+    return { ok: false, errors: ["בקשה נדחתה."] };
   }
 
-  const orderNumber = `LG-${Date.now().toString(36).toUpperCase()}`;
+  const minDate = addBusinessDays(new Date(), 3);
+  minDate.setHours(0, 0, 0, 0);
+  const slot = new Date(`${data.slotDate}T12:00:00`);
+  if (Number.isNaN(slot.getTime()) || slot < minDate) {
+    return {
+      ok: false,
+      errors: ["יש לבחור תאריך לפחות 3 ימי עסקים מראש."],
+    };
+  }
 
-  // Stub: wire to Tranzila/Meshulam/Stripe + iCount + Sheets + SMS later.
+  const quote = quoteCart(data.lines, data.couponCode);
+  if (quote.errors.length || quote.lines.some((l) => !l.stockOk)) {
+    return {
+      ok: false,
+      errors: quote.errors.length
+        ? quote.errors
+        : ["לא ניתן להשלים את ההזמנה כרגע."],
+    };
+  }
+
+  const shippingIls =
+    data.fulfillment === "pickup" ? 0 : quote.shippingIls;
+  const totalIls =
+    Math.max(0, quote.subtotalIls - quote.discountIls) + shippingIls;
+
+  const orderNumber = `LB-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+
   const summary = [
-    `הזמנה חדשה ${orderNumber}`,
-    `${data.fullName} · ${data.phone}`,
+    `הזמנה חדשה מ-LALIBAKERY!`,
+    `אסמכתא: ${orderNumber}`,
+    `שם הלקוח/ה: ${data.fullName}`,
+    `טלפון: ${data.phone}`,
+    `תאריך ושעת איסוף/משלוח: ${data.slotDate} ${data.slotWindow} (${data.fulfillment === "pickup" ? "איסוף נתניה" : "משלוח"})`,
     ...quote.lines.map(
-      (l) => `• ${l.title} (${l.variantLabel}) ×${l.quantity} — ₪${l.lineTotalIls}`,
+      (l) =>
+        `מפרט: ${l.title} (${l.variantLabel}) ×${l.quantity} — ₪${l.lineTotalIls}`,
     ),
-    `סה״כ לתשלום: ₪${quote.totalIls}`,
+    `סה"כ לתשלום: ₪${totalIls}`,
     `אמצעי: ${data.paymentMethod}`,
-    data.address,
-    data.city,
+    data.fulfillment === "delivery" ? `${data.address}, ${data.city}` : data.city,
   ].join("\n");
 
   const whatsappUrl = whatsappLink(siteSettings.whatsapp, summary);
@@ -51,7 +100,7 @@ export async function submitCheckout(
   return {
     ok: true,
     orderNumber,
-    totalIls: quote.totalIls,
+    totalIls,
     whatsappUrl,
     paymentMethod: data.paymentMethod,
   };

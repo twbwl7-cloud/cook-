@@ -212,3 +212,27 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+html[data-a11y="contrast"] body {
+  filter: contrast(1.15);
+}
+
+html[data-a11y="large"] body {
+  font-size: 112.5%;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: 1rem;
+  top: -100%;
+  z-index: 200;
+  border-radius: 999px;
+  background: var(--gold-luxury);
+  color: var(--ink);
+  padding: 0.75rem 1.25rem;
+  font-weight: 800;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}

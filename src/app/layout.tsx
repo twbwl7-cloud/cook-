@@ -9,6 +9,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { LenisProvider } from "@/components/motion/LenisProvider";
 import { MagneticCursor } from "@/components/motion/MagneticCursor";
 import { VipPopup } from "@/components/home/VipPopup";
+import { AccessibilityWidget } from "@/components/layout/AccessibilityWidget";
 import { siteSettings } from "@/data/site";
 
 const heebo = Heebo({
@@ -31,6 +32,18 @@ export const metadata: Metadata = {
   description:
     "LALIBAKERY — עוגות גן, עוגות מספרים ועוגות מעוצבות. אפייה מהלב. הזמנות: 050-8739090",
   metadataBase: new URL("https://lalibakery.co.il"),
+  openGraph: {
+    title: `${siteSettings.brandName} · ${siteSettings.tagline}`,
+    description:
+      "בונות את העוגה — רואות את המחיר. Cake Builder תלת־ממד · איסוף נתניה.",
+    images: [{ url: "/cakes/brand/logo.jpg", width: 512, height: 512 }],
+    locale: "he_IL",
+    type: "website",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/cakes/brand/logo.jpg",
+  },
 };
 
 export default function RootLayout({
@@ -43,13 +56,17 @@ export default function RootLayout({
       <body
         className={`${heebo.variable} ${frank.variable} sticky-cta-safe antialiased`}
       >
+        <a href="#main-content" className="skip-link">
+          דלג לתוכן הראשי
+        </a>
         <LenisProvider>
           <MagneticCursor />
           <Header />
-          <main>{children}</main>
+          <main id="main-content">{children}</main>
           <Footer />
           <WhatsAppFloat />
           <StickyMobileCTA />
+          <AccessibilityWidget />
           <CartDrawer />
           <VipPopup />
         </LenisProvider>

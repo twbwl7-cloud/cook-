@@ -19,12 +19,17 @@ const customSpecSchema = z.object({
 export const checkoutSchema = z.object({
   fullName: z.string().min(2).max(80),
   phone: z.string().min(9).max(20),
-  email: z.string().email(),
+  email: z.string().email().max(120),
   city: z.string().min(2).max(60),
   address: z.string().min(5).max(120),
   notes: z.string().max(500).optional(),
   couponCode: z.string().max(32).optional(),
-  paymentMethod: z.enum(["card", "bit", "paybox", "whatsapp"]),
+  paymentMethod: z.enum(["card", "whatsapp"]),
+  fulfillment: z.enum(["pickup", "delivery"]),
+  slotDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  slotWindow: z.enum(["09:00-12:00", "12:00-15:00", "15:00-18:00"]),
+  /** Honeypot — must stay empty */
+  company: z.string().max(80).optional(),
   lines: z
     .array(
       z.object({

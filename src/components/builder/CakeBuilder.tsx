@@ -73,7 +73,7 @@ export function CakeBuilder() {
       `סה״כ משוער: ₪${total}`,
     ].join("\n");
     return whatsappLink(siteSettings.whatsapp, msg);
-  }, [toCustomSpec, total, tiers, flavor, decors, plaqueText, allergies, notes]);
+  }, [toCustomSpec, total]);
 
   return (
     <div className="mt-8 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
