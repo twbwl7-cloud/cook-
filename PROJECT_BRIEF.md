@@ -1,9 +1,15 @@
 # LALIBAKERY — PROJECT BRIEF
 
 ## Status
-**Module A — Architecture approved. A-2 Art Direction awaiting approval.**  
-No application code until: A-2 approved → A-3 Motion → Immersive plan → Stage 3 build.  
-Docs: `ARCHITECTURE.md` · `DESIGN_DIRECTION.md`
+**Module A — Architecture + Design A (Noir Atelier) approved. A-3 Motion awaiting approval.**  
+No application code until: A-3 approved → Immersive plan → Stage 3 build.  
+Docs: `ARCHITECTURE.md` · `DESIGN_DIRECTION.md` · `MOTION_SYSTEM.md`
+
+## Art direction (locked)
+- **Direction A — Noir Atelier:** black structure · pink blush · gold jewelry CTAs
+- Fonts: Frank Ruhl Libre + Heebo · tracking `-0.02em`
+- Hero H1: עוגה ב־3 קומות — אתן בונות, המחיר מתעדכן בלייב
+- Sticky CTA: הרכיבו עוגה אישית ב-3D
 
 ## Brand
 - **Name:** LALIBAKERY (אפייה מהלב)
