@@ -14,7 +14,13 @@ type CartState = {
   closeCart: () => void;
   toggleCart: () => void;
   setCouponDraft: (code: string) => void;
-  addItem: (productId: string, variantId: string, quantity?: number) => void;
+  addItem: (
+    productId: string,
+    variantId: string,
+    quantity?: number,
+    customSpec?: CartLine["customSpec"],
+  ) => void;
+  addCustomCake: (spec: NonNullable<CartLine["customSpec"]>) => void;
   removeItem: (productId: string, variantId: string) => void;
   setQuantity: (productId: string, variantId: string, quantity: number) => void;
   clearCart: () => void;
@@ -35,12 +41,15 @@ export const useCartStore = create<CartState>()(
       closeCart: () => set({ isOpen: false }),
       toggleCart: () => set((s) => ({ isOpen: !s.isOpen })),
       setCouponDraft: (code) => set({ couponDraft: code }),
-      addItem: (productId, variantId, quantity = 1) => {
+      addItem: (productId, variantId, quantity = 1, customSpec) => {
         set((state) => {
           const existing = state.lines.find(
-            (l) => l.productId === productId && l.variantId === variantId,
+            (l) =>
+              l.productId === productId &&
+              l.variantId === variantId &&
+              l.lineType !== "custom_cake",
           );
-          if (existing) {
+          if (existing && !customSpec) {
             return {
               lines: state.lines.map((l) =>
                 l.productId === productId && l.variantId === variantId
@@ -51,10 +60,35 @@ export const useCartStore = create<CartState>()(
             };
           }
           return {
-            lines: [...state.lines, { productId, variantId, quantity }],
+            lines: [
+              ...state.lines,
+              {
+                lineType: customSpec ? "custom_cake" : "catalog",
+                productId,
+                variantId,
+                quantity,
+                customSpec,
+              },
+            ],
             isOpen: true,
           };
         });
+      },
+      addCustomCake: (spec) => {
+        const variantId = `custom-${spec.tiers}-${spec.flavor}-${Date.now().toString(36)}`;
+        set((state) => ({
+          lines: [
+            ...state.lines,
+            {
+              lineType: "custom_cake",
+              productId: "custom_cake",
+              variantId,
+              quantity: 1,
+              customSpec: spec,
+            },
+          ],
+          isOpen: true,
+        }));
       },
       removeItem: (productId, variantId) =>
         set((state) => ({

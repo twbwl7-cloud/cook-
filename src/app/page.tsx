@@ -21,11 +21,11 @@ export default function HomePage() {
       <PsychStrip />
       <TrustBar />
 
-      {/* Category gate — P28 fewer choices */}
+      {/* Category gate — after Hero pin */}
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <Reveal>
           <h2 className="font-display text-3xl text-ink sm:text-4xl">
-            איזו עוגה סוגרת לכם את האירוע?
+            איזו עוגה סוגרת לכן את האירוע?
           </h2>
           <p className="mt-2 max-w-xl font-bold text-ink/80">
             שלוש קטגוריות ברורות — עוגות גן, מספרים ומעוצבות.

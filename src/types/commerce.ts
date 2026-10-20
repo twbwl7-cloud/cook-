@@ -67,8 +67,21 @@ export type SiteSettings = {
   launchCouponPercent: number;
 };
 
+export type CustomCakeSpec = {
+  tiers: 1 | 2 | 3;
+  flavor: "velvet_rose" | "belgian_chocolate" | "vanilla_gold";
+  decors: Array<
+    "sugar_flowers" | "gold_leaf" | "macaron_crown" | "name_topper"
+  >;
+  plaqueText: string;
+  allergies: Array<"gluten_free" | "vegan" | "sugar_free">;
+  notes: string;
+};
+
 export type CartLine = {
+  lineType?: "catalog" | "custom_cake";
   productId: string;
   variantId: string;
   quantity: number;
+  customSpec?: CustomCakeSpec;
 };

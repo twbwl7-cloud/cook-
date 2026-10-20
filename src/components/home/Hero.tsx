@@ -3,17 +3,21 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { KineticTitle } from "@/components/motion/Reveal";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion, useReducedMotion } from "framer-motion";
 import { siteSettings } from "@/data/site";
+import type { HeroCakeHandle } from "@/components/immersive/HeroCake3D";
 
 const HeroCake3D = dynamic(() => import("@/components/immersive/HeroCake3D"), {
   ssr: false,
   loading: () => (
-    <div className="relative mx-auto flex h-[380px] w-full max-w-md items-center justify-center sm:h-[460px]">
-      <div className="relative h-[88%] w-[88%] overflow-hidden rounded-full border-2 border-ink contact-shadow">
+    <div className="relative mx-auto flex h-[min(42vh,380px)] w-full items-center justify-center sm:h-[480px]">
+      <div className="relative aspect-square w-[86%] overflow-hidden rounded-full border border-gold-luxury/50">
         <Image
           src="/cakes/hero/round-gold-crown.jpg"
-          alt="עוגת כתר זהב"
+          alt=""
           fill
           priority
           className="object-cover"
@@ -24,73 +28,150 @@ const HeroCake3D = dynamic(() => import("@/components/immersive/HeroCake3D"), {
   ),
 });
 
-export function Hero() {
-  return (
-    <section className="relative min-h-[100svh] overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 85% 30%, #ffd1dc 0%, transparent 55%), radial-gradient(ellipse 40% 35% at 5% 90%, #0D0D0D22 0%, transparent 50%), linear-gradient(165deg, #FEE1E8 0%, #FFF7FA 55%, #F0DCE3 100%)",
-        }}
-      />
+const H1 = "בונות את העוגה — רואות את המחיר";
+const H2 =
+  "3 קטגוריות + Builder תלת־ממד · בסיס מ־₪250 · עד 5 עוגות מורכבות ביום";
 
-      <div className="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-20 pt-6 sm:px-6 lg:grid-cols-2 lg:gap-10 lg:pb-14">
-        {/* 360° cake — book P23 / A23 */}
-        <div className="order-1 lg:order-2">
-          <HeroCake3D />
+export function Hero() {
+  const reduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const cakeRef = useRef<HeroCakeHandle>(null);
+  const words = H1.split(" ");
+
+  useEffect(() => {
+    if (reduce) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: "+=55%",
+        pin: true,
+        scrub: 0.65,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          cakeRef.current?.setZoom(self.progress);
+        },
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, [reduce]);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="hero-noir relative min-h-[100svh] overflow-hidden"
+      aria-label="פתח · LALIBAKERY"
+    >
+      <div className="mx-auto grid min-h-[100svh] max-w-6xl items-center gap-4 px-4 pb-24 pt-6 sm:px-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)] lg:gap-8 lg:pb-16 lg:pt-8">
+        {/* Visual — dominant plane */}
+        <div className="order-1 lg:order-2" data-hero-visual>
+          <HeroCake3D ref={cakeRef} />
         </div>
 
+        {/* Copy — single CTA */}
         <div className="order-2 text-center lg:order-1 lg:text-right">
-          <div className="mb-5 inline-flex items-center gap-3 rounded-full border-2 border-ink bg-ink px-3 py-2">
+          <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-gold-luxury/40 bg-black-matte/80 px-3 py-2 backdrop-blur-md">
             <Image
               src="/cakes/brand/logo.jpg"
               alt=""
               width={40}
               height={40}
-              className="h-10 w-10 rounded-full object-cover"
+              className="h-10 w-10 rounded-full object-cover ring-1 ring-gold-luxury/50"
+              priority
             />
             <div className="text-right leading-tight">
-              <p className="font-display text-lg text-pink-soft">{siteSettings.brandName}</p>
-              <p className="text-[11px] font-bold text-gold-2">{siteSettings.tagline}</p>
+              <p className="font-display text-lg text-pink-baby">
+                {siteSettings.brandName}
+              </p>
+              <p className="text-[11px] font-bold text-gold-luxury">
+                {siteSettings.tagline} · HAUTE PÂTISSERIE
+              </p>
             </div>
           </div>
 
-          {/* P01 concrete H1 — charcoal, not AI fluff */}
-          <KineticTitle
-            text="העוגה שסוגרת את המסיבה"
-            className="text-4xl leading-[1.1] text-ink sm:text-5xl lg:text-[3.4rem]"
-          />
+          {/* H1 in DOM immediately — kinetic is enhancement only */}
+          <h1 className="font-display text-balance text-[clamp(2.4rem,5.5vw,3.75rem)] leading-[1.08] tracking-[-0.02em] text-pink-baby">
+            {words.map((word, i) => (
+              <span
+                key={`${word}-${i}`}
+                className="inline-block overflow-hidden align-bottom"
+              >
+                <motion.span
+                  className="inline-block"
+                  initial={reduce ? false : { y: "110%" }}
+                  animate={{ y: 0 }}
+                  transition={{
+                    duration: 0.85,
+                    delay: 0.08 + i * 0.06,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                >
+                  {word}
+                  {i < words.length - 1 ? "\u00A0" : ""}
+                </motion.span>
+              </span>
+            ))}
+          </h1>
 
-          {/* P17 specific claim with number */}
-          <p className="mx-auto mt-5 max-w-md text-base font-bold leading-relaxed text-ink sm:text-lg lg:mx-0">
-            3 קטגוריות · הזמנה לפי תמונה או דמות · וואטסאפ{" "}
-            <bdi className="font-extrabold">{siteSettings.phone}</bdi>
-          </p>
+          <motion.p
+            className="mx-auto mt-5 max-w-md text-[clamp(0.95rem,1.6vw,1.125rem)] font-bold leading-relaxed text-pink-baby/75 lg:mx-0"
+            initial={reduce ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.7,
+              delay: 0.45,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+          >
+            {H2.split("₪250").map((part, i, arr) =>
+              i < arr.length - 1 ? (
+                <span key={i}>
+                  {part}
+                  <bdi>₪250</bdi>
+                </span>
+              ) : (
+                <span key={i}>{part}</span>
+              ),
+            )}
+          </motion.p>
 
-          {/* P03 isolation — one gold CTA dominates */}
-          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+          <motion.div
+            className="mt-8 flex justify-center lg:justify-start"
+            initial={reduce ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.7,
+              delay: 0.55,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+          >
             <Link
-              href="/product/gold-crown-king"
-              className="btn-gold contact-shadow inline-flex h-13 min-h-12 min-w-[220px] items-center justify-center rounded-full px-8 text-sm font-extrabold text-ink"
+              href="/builder"
+              className="btn-gold contact-shadow inline-flex h-13 min-h-12 min-w-[240px] items-center justify-center rounded-full px-8 text-sm font-extrabold text-ink"
               data-magnetic
-              data-cursor-label="ORDER"
+              data-cursor-label="BUILD"
             >
-              להזמנת העוגה הזו
+              להרכבת עוגה ב-3D
             </Link>
-            <Link
-              href="/collections/gan"
-              className="inline-flex h-12 min-w-[160px] items-center justify-center rounded-full border-2 border-ink bg-ink px-6 text-sm font-bold text-pink-soft"
-            >
-              עוגות גן
-            </Link>
-          </div>
+          </motion.div>
 
-          {/* P14 social proof */}
-          <p className="mt-6 text-xs font-extrabold tracking-wide text-ink">
-            ★★★★★ · לקוחות חוזרות בוואטסאפ · צילומים מהסטודיו בלבד
-          </p>
+          <motion.p
+            className="mt-5 text-xs font-semibold leading-relaxed text-pink-baby/65"
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          >
+            איסוף נתניה · צילומי סטודיו אמיתיים · וואטסאפ{" "}
+            <bdi className="font-extrabold text-gold-luxury">
+              {siteSettings.phone}
+            </bdi>
+          </motion.p>
         </div>
       </div>
     </section>

@@ -2,8 +2,19 @@ import "server-only";
 
 import { getProductById } from "@/data/products";
 import { siteSettings } from "@/data/site";
-import type { CartLine } from "@/types/commerce";
+import type { CartLine, CustomCakeSpec } from "@/types/commerce";
 import { z } from "zod";
+
+const customSpecSchema = z.object({
+  tiers: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+  flavor: z.enum(["velvet_rose", "belgian_chocolate", "vanilla_gold"]),
+  decors: z.array(
+    z.enum(["sugar_flowers", "gold_leaf", "macaron_crown", "name_topper"]),
+  ),
+  plaqueText: z.string().max(25),
+  allergies: z.array(z.enum(["gluten_free", "vegan", "sugar_free"])),
+  notes: z.string().max(500),
+});
 
 export const checkoutSchema = z.object({
   fullName: z.string().min(2).max(80),
@@ -17,9 +28,11 @@ export const checkoutSchema = z.object({
   lines: z
     .array(
       z.object({
+        lineType: z.enum(["catalog", "custom_cake"]).optional(),
         productId: z.string().min(1),
         variantId: z.string().min(1),
         quantity: z.number().int().min(1).max(20),
+        customSpec: customSpecSchema.optional(),
       }),
     )
     .min(1)
@@ -37,6 +50,7 @@ export type PricedLine = {
   quantity: number;
   lineTotalIls: number;
   stockOk: boolean;
+  lineType: "catalog" | "custom_cake";
 };
 
 export type PriceQuote = {
@@ -49,7 +63,29 @@ export type PriceQuote = {
   errors: string[];
 };
 
-/** Server-side truth: prices & stock always from catalog, never from client. */
+const TIER_ADD: Record<1 | 2 | 3, number> = { 1: 0, 2: 180, 3: 350 };
+const FLAVOR_ADD: Record<CustomCakeSpec["flavor"], number> = {
+  velvet_rose: 0,
+  belgian_chocolate: 30,
+  vanilla_gold: 40,
+};
+const DECOR_ADD: Record<CustomCakeSpec["decors"][number], number> = {
+  sugar_flowers: 50,
+  gold_leaf: 80,
+  macaron_crown: 70,
+  name_topper: 45,
+};
+
+function serverQuoteCustom(spec: CustomCakeSpec): number {
+  return (
+    250 +
+    TIER_ADD[spec.tiers] +
+    FLAVOR_ADD[spec.flavor] +
+    spec.decors.reduce((s, d) => s + DECOR_ADD[d], 0)
+  );
+}
+
+/** Server-side truth: prices & stock always from catalog / locked matrix. */
 export function quoteCart(
   lines: CartLine[],
   couponCode?: string | null,
@@ -58,6 +94,37 @@ export function quoteCart(
   const priced: PricedLine[] = [];
 
   for (const line of lines) {
+    const qty = Math.min(Math.max(1, line.quantity), 20);
+
+    if (line.lineType === "custom_cake" || line.productId === "custom_cake") {
+      if (!line.customSpec) {
+        errors.push("מפרט עוגה מותאמת חסר");
+        continue;
+      }
+      const parsed = customSpecSchema.safeParse(line.customSpec);
+      if (!parsed.success) {
+        errors.push("מפרט עוגה מותאמת לא תקין");
+        continue;
+      }
+      if (parsed.data.plaqueText.length > 25) {
+        errors.push("טקסט הפלאק ארוך מ־25 תווים");
+        continue;
+      }
+      const unit = serverQuoteCustom(parsed.data);
+      priced.push({
+        productId: "custom_cake",
+        variantId: line.variantId,
+        title: `עוגה מותאמת · ${parsed.data.tiers} קומות`,
+        variantLabel: parsed.data.flavor,
+        unitPriceIls: unit,
+        quantity: qty,
+        lineTotalIls: unit * qty,
+        stockOk: true,
+        lineType: "custom_cake",
+      });
+      continue;
+    }
+
     const product = getProductById(line.productId);
     if (!product) {
       errors.push(`מוצר לא נמצא: ${line.productId}`);
@@ -68,7 +135,6 @@ export function quoteCart(
       errors.push(`וריאציה לא נמצאה עבור ${product.title}`);
       continue;
     }
-    const qty = Math.min(Math.max(1, line.quantity), 20);
     const stockOk = variant.stock >= qty;
     if (!stockOk) {
       errors.push(`מלאי חסר: ${product.title} (${variant.label})`);
@@ -82,6 +148,7 @@ export function quoteCart(
       quantity: qty,
       lineTotalIls: variant.priceIls * qty,
       stockOk,
+      lineType: "catalog",
     });
   }
 

@@ -1,9 +1,15 @@
 # LALIBAKERY — PROJECT BRIEF
 
 ## Status
-**Module A — Architecture + Design A (Noir Atelier) approved. A-3 Motion awaiting approval.**  
-No application code until: A-3 approved → Immersive plan → Stage 3 build.  
+**Hero Engine (Script 1.2) — Stage 5 shipped.**  
+Header / Footer engines not started (await engine pick).  
 Docs: `ARCHITECTURE.md` · `DESIGN_DIRECTION.md` · `MOTION_SYSTEM.md`
+
+## Hero (locked & live)
+- Direction A Noir Atelier · Path C1 3-tier R3F + poster LCP
+- H1: בונות את העוגה — רואות את המחיר
+- CTA → `/builder` · Sticky: הרכיבו עוגה אישית ב-3D
+- GSAP pin zoom · Lenis↔ScrollTrigger sync
 
 ## Art direction (locked)
 - **Direction A — Noir Atelier:** black structure · pink blush · gold jewelry CTAs

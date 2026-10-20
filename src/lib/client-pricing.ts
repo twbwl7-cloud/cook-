@@ -1,11 +1,27 @@
 import { getProductById } from "@/data/products";
 import { siteSettings } from "@/data/site";
+import { quoteCustomCake } from "@/lib/cake-pricing";
 import type { CartLine } from "@/types/commerce";
 
 /** Display-only estimate. Final totals always recalculated on the server. */
 export function estimateCart(lines: CartLine[], couponCode?: string) {
   let subtotalIls = 0;
   const detailed = lines.map((line) => {
+    if (line.lineType === "custom_cake" && line.customSpec) {
+      const unit = quoteCustomCake(line.customSpec);
+      const lineTotal = unit * line.quantity;
+      subtotalIls += lineTotal;
+      return {
+        ...line,
+        title: `עוגה מותאמת · ${line.customSpec.tiers} קומות`,
+        variantLabel: line.customSpec.flavor,
+        unitPriceIls: unit,
+        lineTotalIls: lineTotal,
+        image: "/cakes/hero/round-gold-crown.jpg",
+        stock: 99,
+      };
+    }
+
     const product = getProductById(line.productId);
     const variant = product?.variants.find((v) => v.id === line.variantId);
     const unit = variant?.priceIls ?? 0;
