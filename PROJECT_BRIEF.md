@@ -1,8 +1,9 @@
 # LALIBAKERY — PROJECT BRIEF
 
 ## Status
-**Module A — Research complete (Groups 1–5). Architecture doc awaiting approval.**  
-No application code until: Architecture approved → A-2 Art Direction → A-3 Motion → Immersive plan → Stage 3 build.
+**Module A — Architecture approved. A-2 Art Direction awaiting approval.**  
+No application code until: A-2 approved → A-3 Motion → Immersive plan → Stage 3 build.  
+Docs: `ARCHITECTURE.md` · `DESIGN_DIRECTION.md`
 
 ## Brand
 - **Name:** LALIBAKERY (אפייה מהלב)
